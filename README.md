@@ -65,3 +65,13 @@ python parking.py
 I recommand using `screen` linux command on each file
 
 ##How it's work
+1. Click on the day you want to have a parking ticket -> it become yellow.
+2. The date is stored in the sqlite database `parking.db`
+3. Every 15 minutes (you can change it) `parking.py` will check if a ticket is needed. if so, it will buy a one day (you can change it) ticket and go to sleep.
+
+##TODO
+* Add the possibility to buy an half day ticket, maybe choose wich hour you want,
+* Change the paybyphone unofficial API I made with something proper,
+* Add a secure login,
+* Add the possibility to force refresh to not have to wait that the parking.py daemon wake up,
+* Add the possibility to stop a current parking ticket.
