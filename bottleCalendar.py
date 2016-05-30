@@ -1,3 +1,4 @@
+# coding: utf-8
 from bottle import route, run, template, request, static_file, install, auth_basic
 import calendar
 from datetime import datetime
