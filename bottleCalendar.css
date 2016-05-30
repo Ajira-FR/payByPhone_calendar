@@ -1,0 +1,5 @@
+td.good {cursor:hand;color:black;text-align:center;margin-top:0;background:#ffF;font:bold 13px Arial}
+td.weekend {cursor:hand;color:white;text-align:center;margin-top:0;background-color:Teal;font:bold 13px Arial}
+td.out {cursor:hand;color:#b0b0b0;text-align:center;margin-top:0;background:#ffF;font:bold 12px Arial}
+td.closed {text-decoration:line-through;background-color:grey;color:white}
+td.today {color:red}

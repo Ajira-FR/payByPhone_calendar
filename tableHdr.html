@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Parking</title>
+    <link rel="stylesheet" href="bottleCalendar.css">
+    <script   src="https://code.jquery.com/jquery-2.2.3.min.js"   integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo="   crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+</head>
+<body>
+     <script type="text/javascript">
+            function add_day(date) {
+                $.getJSON("/_add_day",
+                    { data:date },
+                    function(data) {
+                        var id = data.id
+                        document.getElementById(date).style.backgroundColor="yellow"
+                    }
+                 )
+            }
+
+            function remove_day(date) {
+                $.getJSON("/_remove_day",
+                    { data:date },
+                    function(data) {
+                        var id = data.id
+                        document.getElementById(date).style.backgroundColor="#ffffff"
+                    }
+                 )
+            }
+
+            function ProcessDate(date){
+                if (document.getElementById(date).style.backgroundColor != "yellow"){
+                    add_day(date)
+                }
+                else{
+                    remove_day(date)
+                }
+            }
+    </script>
+    <div class="container">
+        <div class="btn-group">
+            % for button in data["button"]:
+            <a href="{{button['href']}}" class="{{button['class']}}" data-calendar-nav="{{button['data-calendar-nav']}}">{{button['text']}}</a>
+            % end
+        </div>
+        <h2>{{data['month']}} {{data['year']}}</h2>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Lundi</th>
+                    <th>Mardi</th>
+                    <th>Mercredi</th>
+                    <th>Jeudi</th>
+                    <th>Vendredi</th>
+                    <th>Samedi</th>
+                    <th>Dimanche</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                <%
+                i = 0
+                for cell in data["tableBody"]:
+                    i += 1
+                %>
+                    <td
+                    % for cle, valeur in cell["td"].items():
+                        {{cle}}="{{valeur}}"
+                    % end
+                        >{{cell['text']}}</td>
+                    % if i % 7 == 0:
+                        </tr><tr>
+                    % end
+                % end
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
