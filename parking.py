@@ -8,16 +8,12 @@ import bs4
 import re
 import sqlite3
 from datetime import datetime
-
-MAX_SLEEP_TIME = 2 * 60 * 60 #2 hours
-SLEEPING_TIME = 15 * 60 #15 min
-
-URL = "https://m.paybyphone.fr/default.aspx"
+from config import Config
 
 ARG1 = {
     'ctl00$ContentPlaceHolder1$CallingCodeDropDownList': '-3',
-     'ctl00$ContentPlaceHolder1$AccountTextBox': '06********', #insert phone number there
-     'ctl00$ContentPlaceHolder1$PinOrLast4DigitCcTextBox': '****', #password
+     'ctl00$ContentPlaceHolder1$AccountTextBox': Config.PHONE_NUMBER,
+     'ctl00$ContentPlaceHolder1$PinOrLast4DigitCcTextBox': Config.PIN,
      'ctl00$ContentPlaceHolder1$RememberPinCheckBox': 'on',
      'ctl00$ContentPlaceHolder1$LoginButton': 'se connecter'
 }
@@ -25,7 +21,7 @@ ARG1 = {
 ARG2 = {
     '__EVENTTARGET': '',
     '__EVENTARGUMENT': '',
-    'ctl00$ContentPlaceHolder1$PreviousLocationDropDownList': '****', #change with your resident code
+    'ctl00$ContentPlaceHolder1$PreviousLocationDropDownList': Config.PARKING_CODE,
     'ctl00$ContentPlaceHolder1$LocationNumberTextBox': '',
     'ctl00$ContentPlaceHolder1$NextButton': 'suivant'
 }
@@ -33,7 +29,7 @@ ARG2 = {
 ARG3 = {
     '__EVENTTARGET': '',
     '__EVENTARGUMENT': '',
-    'ctl00$ContentPlaceHolder1$SelectVehicleDropDownList': '*****', #change with your vehicule id
+    'ctl00$ContentPlaceHolder1$SelectVehicleDropDownList': Config.CAR_ID,
     'ctl00$ContentPlaceHolder1$DurationTextBox': '1',
     'ctl00$ContentPlaceHolder1$TimeUnitDropDownList': '3',
     'ctl00$ContentPlaceHolder1$NextButton': 'suivant'
@@ -50,7 +46,7 @@ ARG4 = {
 
 HEADERS = {
     'Origin': 'https://m.paybyphone.fr',
-    'Referer': URL,
+    'Referer': Config.URL,
     'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36'
 }
 
@@ -74,7 +70,7 @@ def findToken(page):
 def connection(logger):
     logger.info("Try to connect ...")
     s = requests.session()
-    req = s.get(URL)
+    req = s.get(Config.URL)
 
     a, b, c = findToken(req.text)
     ARG1['__VIEWSTATE'] = a
@@ -84,7 +80,7 @@ def connection(logger):
     ARG1['__EVENTVALIDATION'] = c
     logger.info("__EVENTVALIDATION {}".format(c[:10]))
 
-    req = s.post(URL, data=ARG1, allow_redirects=True)
+    req = s.post(Config.URL, data=ARG1, allow_redirects=True)
     logger.info("Connection success !")
     return req, s
 
@@ -148,7 +144,7 @@ def newParking(nbDays, request, session, logger):
     result = html.find("span", attrs={"id":"ctl00_ContentPlaceHolder1_MessageBoxTable_MessageLabel"})
 
     if result:
-        #maybe é result as an error (confirmé)
+        #maybe 'é' result as an error (confirmé)
         if "Stationnement confirm" in result.string:
             logger.info("Parking confirmed !")
         else:
@@ -187,7 +183,7 @@ if __name__ == "__main__":
     formatter = logging.Formatter('%(asctime)s :: %(levelname)s :: %(message)s')
     # création d'un handler qui va rediriger une écriture du log vers
     # un fichier en mode 'append', avec 1 backup et une taille max de 1Mo
-    file_handler = RotatingFileHandler('parking.log', 'a', 1000000, 1)
+    file_handler = RotatingFileHandler(Config.LOGGER, 'a', 1000000, 1)
     # on lui met le niveau sur DEBUG, on lui dit qu'il doit utiliser le formateur
     # créé précédement et on ajoute ce handler au logger
     file_handler.setLevel(logging.DEBUG)
@@ -211,23 +207,14 @@ if __name__ == "__main__":
                 minutes = (hours * 60) + timeTupple[2]
                 seconds = (minutes + 1) * 60
                 logger.info("Ticket valid for {} seconds".format(seconds))
-                if seconds > MAX_SLEEP_TIME:
-                    seconds = MAX_SLEEP_TIME
+                if seconds > Config.MAX_SLEEP_TIME:
+                    seconds = Config.MAX_SLEEP_TIME
                 logger.info("Sleep for {} seconds".format(seconds))
                 time.sleep(seconds)
             else:# no ticket
-                if todayCalendar(request, session, logger, "parking.db"):
+                if todayCalendar(request, session, logger, Config.DATABASE):
                     newParking(1, request, session, logger)
                 else:
-                    time.sleep(SLEEPING_TIME)
+                    time.sleep(Config.SLEEPING_TIME)
         except Exception as e:
             logger.exception("parking.py ended because of unknown exception :(")
-
-
-
-
-
-
-
-
-

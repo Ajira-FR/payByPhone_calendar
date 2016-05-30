@@ -6,12 +6,13 @@ from time import mktime
 import json
 from bottle_sqlite import SQLitePlugin
 import locale
+from config import Config
 
 locale.setlocale(locale.LC_TIME, '')
-install(SQLitePlugin(dbfile='parking.db'))
+install(SQLitePlugin(dbfile = Config.DATABASE))
 
 def authentification(login, password):
-    return login == 'user' and password == "user"
+    return login == Config.LOGIN and password == Config.PASSWORD
 
 def jsonButton(href, htmlClass, dataCalendarNav, text):
     return {"href" : href, "class" : htmlClass, "data-calendar-nav" : dataCalendarNav, "text" : text}
@@ -112,7 +113,6 @@ def removeDay(db):
 def css():
     return static_file("bottleCalendar.css", root='.')
 
-
 @route('/', apply=[auth_basic(authentification)])
 def index(db):
     today = datetime.today()
@@ -129,4 +129,4 @@ def index(db):
     today = datetime(today.year, today.month, today.day)
     return createHTMLCalendar(year, month, today, db)
 
-run(host='localhost', port=8088, debug=True)
+run(host=Config.HOST, port=Config.PORT, debug=Config.DEBUG)
