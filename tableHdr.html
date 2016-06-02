@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" xmlns="http://www.w3.org/1999/html">
+<html lang="fr" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Parking</title>
@@ -58,22 +58,25 @@
                 </tr>
             </thead>
             <tbody>
+            <%
+            i = 0
+            for cell in data["tableBody"]:
+                if i % 7 == 0:
+            %>
                 <tr>
-                <%
-                i = 0
-                for cell in data["tableBody"]:
-                    i += 1
-                %>
-                    <td
-                    % for cle, valeur in cell["td"].items():
-                        {{cle}}="{{valeur}}"
-                    % end
-                        >{{cell['text']}}</td>
-                    % if i % 7 == 0:
-                        </tr><tr>
-                    % end
                 % end
+                <td
+                % for cle, valeur in cell["td"].items():
+                    {{cle}}="{{valeur}}"
+                % end
+                    >{{cell['text']}}</td>
+                % i = i + 1
+                % if i % 7 == 0:
                 </tr>
+            <%
+                end
+            end
+            %>
             </tbody>
         </table>
     </div>
