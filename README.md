@@ -12,45 +12,39 @@ You need to have a paybyphone.com account and a vehicule to use this application
 * sqlite3
 * requests
 
+##How to installation
+1. (optional) Create a virtual environnement :
+```bash
+virtualenv myvenv
+source myvenv/bin/activate
+```
+2. Install requierment : `python setup.py install`
 
 ##First launch
-1. Edit the `parking.py` file with :
+1. Edit the `config.py` file as you want :
 ```python
-ARG1 = {
-    'ctl00$ContentPlaceHolder1$CallingCodeDropDownList': '-3',
-     'ctl00$ContentPlaceHolder1$AccountTextBox': '06********', #insert phone number there
-     'ctl00$ContentPlaceHolder1$PinOrLast4DigitCcTextBox': '****', #password
-     'ctl00$ContentPlaceHolder1$RememberPinCheckBox': 'on',
-     'ctl00$ContentPlaceHolder1$LoginButton': 'se connecter'
-}
+class Config:
+    #use by bottleCalendar.py
+    DATABASE    = "parking.db"
+    LOGIN       = "user"
+    PASSWORD    = "user.user"
+    HOST        = "localhost"
+    PORT        = "8088"
+    DEBUG       = True
 
-ARG2 = {
-    '__EVENTTARGET': '',
-    '__EVENTARGUMENT': '',
-    'ctl00$ContentPlaceHolder1$PreviousLocationDropDownList': '****', #change with your resident code
-    'ctl00$ContentPlaceHolder1$LocationNumberTextBox': '',
-    'ctl00$ContentPlaceHolder1$NextButton': 'suivant'
-}
+    #use by parking.py
+    MAX_SLEEP_TIME  = 2 * 60 * 60  # 2 hours
+    SLEEPING_TIME   = 15 * 60  # 15 min
+    URL             = "https://m.paybyphone.fr/default.aspx"
+    PHONE_NUMBER    = "06********" #insert phone number there
+    PIN             = "****" # paybyphone password
+    PARKING_CODE    = "***" #change with your resident code
+    CAR_ID          = "*****" #change with your vehicule id
+    LOGGER          = "parking.log"
+```
+2. Don't forget to change `LOGIN` and `PASSWORD`
+3. If you want to access to your calendar over Internet put your IP in `HOST` and port in `PORT`
 
-ARG3 = {
-    '__EVENTTARGET': '',
-    '__EVENTARGUMENT': '',
-    'ctl00$ContentPlaceHolder1$SelectVehicleDropDownList': '*****', #change with your vehicule id
-    'ctl00$ContentPlaceHolder1$DurationTextBox': '1',
-    'ctl00$ContentPlaceHolder1$TimeUnitDropDownList': '3',
-    'ctl00$ContentPlaceHolder1$NextButton': 'suivant'
-}
-```
-2. Change login/password in `bottleCalendar.py` in the authentification function (yes it's ugly, i have to change it) :
-```python
-def authentification(login, password):
-    return login == 'user' and password == "user"
-```
-
-3. If you want to access to your calendar over Internet put your IP at the end of `bottleCalendar.py`:
-```python
-run(host='localhost', port=8088, debug=True)
-```
 **Warning** : Bottle use basic authentification that is absolutly not secure (login/password with base64 encoding) please be careful and use a secure transport layer like SSL/TLS or VPN !
 
 ##How to use it
