@@ -11,5 +11,5 @@ setup(
     description='An HTML calendar with a Python back-end to manage PayByPhone parking ticket',
     long_description=open('README.md').read(),
     packages=find_packages(),
-    install_requires=['bottle', 'bottle_sqlite', 'bs4', 'requests']
+    install_requires=['bottle', 'bottle_sqlite', 'bs4', 'requests', 'Paste']
 )

@@ -8,7 +8,7 @@ class Config:
     HOST        = "192.168.1.13"
     PORT        = "60"
     DEBUG       = True
-    SERVER      = "paste"
+    SERVER      = "paste" #you can use the web server you want
 
     #use by parking.py
     MAX_SLEEP_TIME  = 2 * 60 * 60  # 2 hours
