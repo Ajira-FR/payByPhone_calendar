@@ -21,8 +21,7 @@ ARG1 = {
 ARG2 = {
     '__EVENTTARGET': '',
     '__EVENTARGUMENT': '',
-    'ctl00$ContentPlaceHolder1$PreviousLocationDropDownList': Config.PARKING_CODE,
-    'ctl00$ContentPlaceHolder1$LocationNumberTextBox': '',
+    'ctl00$ContentPlaceHolder1$LocationNumberTextBox': Config.PARKING_CODE,
     'ctl00$ContentPlaceHolder1$NextButton': 'suivant'
 }
 
