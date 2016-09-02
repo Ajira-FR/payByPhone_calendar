@@ -121,7 +121,7 @@ def newParking(nbDays, request, session, logger):
     ARG2['__EVENTVALIDATION'] = c
 
     req = session.post(request.url, data=ARG2, allow_redirects=True)
-    logger.info("RCZ found !")
+    logger.info("car found !")
 
     a, b, c = findToken(req.text)
     ARG3["ctl00$ContentPlaceHolder1$DurationTextBox"] = nbDays

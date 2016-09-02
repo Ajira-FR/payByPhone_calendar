@@ -5,9 +5,10 @@ class Config:
     DATABASE    = "parking.db"
     LOGIN       = "user"
     PASSWORD    = "user.user"
-    HOST        = "localhost"
-    PORT        = "8088"
+    HOST        = "192.168.1.13"
+    PORT        = "60"
     DEBUG       = True
+    SERVER      = "paste"
 
     #use by parking.py
     MAX_SLEEP_TIME  = 2 * 60 * 60  # 2 hours
