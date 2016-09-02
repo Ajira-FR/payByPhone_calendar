@@ -129,4 +129,4 @@ def index(db):
     today = datetime(today.year, today.month, today.day)
     return createHTMLCalendar(year, month, today, db)
 
-run(host=Config.HOST, port=Config.PORT, debug=Config.DEBUG)
+run(host=Config.HOST, port=Config.PORT, debug=Config.DEBUG, server=Config.SERVER)
