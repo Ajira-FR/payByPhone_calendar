@@ -7,7 +7,7 @@ import requests
 import bs4
 import re
 import sqlite3
-from datetime import datetime
+from datetime import datetime, timedelta
 from config import Config
 
 ARG1 = {
@@ -151,12 +151,30 @@ def newParking(nbDays, request, session, logger):
     else:
         logger.error(req.text)
 
-def todayCalendar(request, session, logger, database):
+def todayCalendar(logger, database):
     conn = sqlite3.connect(database)
     cur = conn.cursor()
     today = datetime.today()
     today = datetime(today.year, today.month, today.day)
     timestamp = time.mktime(today.timetuple())
+    try:
+        cur.execute("SELECT * FROM parking WHERE timestamp = ?", (timestamp,))
+        res = cur.fetchone()
+        cur.close()
+        if res:
+            logger.info("SQL = {}".format(res))
+            return True
+        else:
+            return False
+
+    except sqlite3.Error as e:
+        logger.error(e.args[0])
+        cur.close()
+
+def isParkingNeeded(logger, database, dayWanted):
+    conn = sqlite3.connect(database)
+    cur = conn.cursor()
+    timestamp = time.mktime(dayWanted.timetuple())
     try:
         cur.execute("SELECT * FROM parking WHERE timestamp = ?", (timestamp,))
         res = cur.fetchone()
@@ -211,7 +229,14 @@ if __name__ == "__main__":
                 logger.info("Sleep for {} seconds".format(seconds))
                 time.sleep(seconds)
             else:# no ticket
-                if todayCalendar(request, session, logger, Config.DATABASE):
+                dayWanted = datetime.today()
+                dayWanted = datetime(dayWanted.year, dayWanted.month, dayWanted.day)
+                nbDays = 0
+                while isParkingNeeded(logger, Config.DATABASE, dayWanted):
+                    nbDays = 1
+                    t = timedelta(1)
+                    dayWanted += t
+                if nbDays > 0:
                     newParking(1, request, session, logger)
                 else:
                     time.sleep(Config.SLEEPING_TIME)
