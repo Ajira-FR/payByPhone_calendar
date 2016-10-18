@@ -233,11 +233,11 @@ if __name__ == "__main__":
                 dayWanted = datetime(dayWanted.year, dayWanted.month, dayWanted.day)
                 nbDays = 0
                 while isParkingNeeded(logger, Config.DATABASE, dayWanted):
-                    nbDays = 1
+                    nbDays += 1
                     t = timedelta(1)
                     dayWanted += t
                 if nbDays > 0:
-                    newParking(1, request, session, logger)
+                    newParking(nbDays, request, session, logger)
                 else:
                     time.sleep(Config.SLEEPING_TIME)
         except Exception as e:
